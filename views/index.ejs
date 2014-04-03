@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <meta charset=”utf-8”>
+        <title>Swiftsubs, one click, one sub</title>
+        <meta name="description" content="Get your subtitles in one click">
+        <meta name="keywords" content="subtitle, subtitles, sub, srt, new subtitles, movie subtitle">
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	    <link href="/stylesheets/style.css" media="screen, projection" rel="stylesheet" type="text/css" /> 
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/javascripts/index.js"></script>
+    </head>
+    <body>
+    <div class="container">
+        <div class="form-horizontal" role="form">
+            <div class="form-group top-wrapper-buffer"> 
+                <div class="form-group">
+                    <img class="center-block top-buffer" src="/images/temp_logo.png"/>
+                    <input id="sub_title" type="text" class="form-control text-center" 
+                        placeholder="ex The Walking Dead S04E14 x2642HD[ev] or Frozen.2013.1080p.BluRay.x264.YIFY.mp4">
+                    <select id="language" class="form-control top-buffer text-center col-sm-2">
+                      <option>English</option>
+                      <option>Arabic</option>
+                      <option>Brazillian</option>
+                      <option>Danish</option>
+                      <option>Dutch</option>
+                      <option>Farsi</option>
+                      <option>Finnish</option>
+                      <option>French</option>
+                      <option>Greek</option>
+                      <option>Hebrew</option>
+                      <option>Indonesian</option>
+                      <option>Italian</option>
+                      <option>Japanese</option>
+                      <option>Portuguese</option>
+                      <option>Persian</option>
+                      <option>Romanian</option>
+                      <option>Spanish</option>
+                      <option>Swedish</option>
+                      <option>Thai</option>
+                      <option>Turkish</option>
+                    </select>
+                    <a id="get_sub" class="btn btn-default form-control top-buffer col-sm-10" onclick=getSub()>Get subtitle</a>
+                    <a id="result" href="#" class="btn btn-success form-control top-buffer" 
+                        role="button" style="display:none;margin-top:40px;"></a>
+                    <div class="clearfix">
+                    <img id="image_loader" class="center-block image-loader"  
+                    src="/images/ajax_loader.gif" style="display:none;"/>
+                    </div>
+                        <div> 
+                        <h4 id="slider" class="center-block footer">
+                            protip: right click and "save as" to place the file in the right folder
+                        </h4>
+                   </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+</html>

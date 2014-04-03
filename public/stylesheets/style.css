@@ -1,0 +1,27 @@
+body{}
+
+.top-buffer {
+    margin-top: 4px;
+}
+
+.image-loader {
+    margin-top: 10px;
+}
+
+.top-wrapper-buffer{
+    margin-top:30px;
+}
+
+.footer{
+    bottom: 0px;
+    margin-left: auto;
+    position: fixed;
+    margin-right: auto;
+    margin-bottom:10px;
+}
+
+#slider{
+    transition-property: left;
+    transition-duration: 2s;   
+    left:-1000px;
+}
