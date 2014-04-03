@@ -21,6 +21,9 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, "/public")));
 
+app.set("domain", "82.196.12.214");
+app.set("port", 8080);
+
 //render 
 app.get('/', routes.index);
 
@@ -29,8 +32,6 @@ app.get('/get/*', routes.getSubtitle);
 app.get('/output/*', routes.downloadSubtitle);
 
 //render
-app.set('domain', "myhost.whatever");
-app.set('port', process.env.PORT || 8080);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
