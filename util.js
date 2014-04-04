@@ -97,7 +97,7 @@ var fallbackSearch = function(document, query, callback){
  */
 var getBestUrls = function(urls, callbackhell){
     var best = {"score":0,"url":""},
-        waiting = -1;
+        waiting = 0;
 
     for (var j=0; j < urls.length; j++){
         waiting++;
@@ -108,10 +108,10 @@ var getBestUrls = function(urls, callbackhell){
             for (var i = 0; i < details.length; i++){
                 var data = details[i],
                     list = data.getElementsByTagName("ul")[0].getElementsByTagName("li");
-                waiting++; 
                 for (var i = 0; i < list.length; i++){
                     var liContent = list[i].innerHTML.toLowerCase();
                     if (liContent.indexOf("voted") >= 0){
+                        waiting--;
                         var rating = parseInt(liContent.replace(/\D+/g, ""), 10);
                         
                         if (best.score < rating){
@@ -119,11 +119,12 @@ var getBestUrls = function(urls, callbackhell){
                             best.url = document.getElementById("downloadButton").href;
                         }
 
-                        if (!waiting--) {
+                        if (!waiting) {
                             callbackhell(best)
-                            break;
                         };
+                        break;
                     } else if (liContent.indexOf("downloads") >= 0){
+                        waiting--;
                         var downloads = parseInt(liContent.replace(/\D+/g, ""), 10);
                          
                         if (best.score < downloads){
@@ -131,10 +132,10 @@ var getBestUrls = function(urls, callbackhell){
                             best.url = document.getElementById("downloadButton").href;
                         }
                         
-                        if (!waiting--){ 
+                        if (!waiting){ 
                             callbackhell(best);
-                            break;
                         }
+                        break;
                     }
                 }
             }
