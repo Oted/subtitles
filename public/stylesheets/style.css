@@ -4,6 +4,10 @@ body{}
     margin-top: 4px;
 }
 
+.bottom-buffer {
+    margin-bottom: 40px;
+}
+
 .image-loader {
     margin-top: 10px;
 }

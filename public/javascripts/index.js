@@ -1,6 +1,5 @@
 $(document).ready(function(){
     $("#sub_title").bind('keyup', function(event){ 
-        console.log(event.keyCode);
         if(event.keyCode === 13){ 
             event.preventDefault();
             getSub();
@@ -35,6 +34,7 @@ var getSub = function(){
             $("#slider").css({"left":window.innerWidth / 2});
         },
         error:function (xhr, ajaxOptions, thrownError){
+            console.log("Ajax request failed");
             $("#result").show(200);
             $("#image_loader").hide();
             $("#result").removeClass("btn-success");
