@@ -96,7 +96,7 @@ var fallbackSearch = function(document, query, callback){
 
     for (var i = 0; i < titles.length; i++){ 
         title = titles[i].getElementsByTagName("a")[0].innerHTML.toLowerCase();
-        levenDistanceTemp = levenstein(query, title);     
+        levenDistanceTemp = util.levenstein(query, title);     
         if (levenDistanceTemp <= levenDistanceMin) {
             best = titles[i].getElementsByTagName("a")[0].href;
         }
