@@ -54,7 +54,7 @@ var getZipContent = function(archPath, callback){
             if (fs.existsSync("./output/" + fileName)) {
                 callback(fileName);
                 parser.emit("close");
-                removeFile(archPath);
+                readStream.emit("close");
             } else {
                 if (fileName.toLowerCase().indexOf(".srt") > 0) {
                     var stream = fs.createWriteStream("./output/"+fileName,{flags:"w", autoClose:true});
@@ -62,10 +62,11 @@ var getZipContent = function(archPath, callback){
                     stream.on("finish",function(){
                         callback(fileName);
                         parser.emit("close");
-                        removeFile(archPath);
+                        readStream.emit("close");
                     });
                     stream.on("error", function(){
                         parser.emit("close");
+                        readStream.emit("close");
                         callback(""); 
                     });
                 } else if (fileName.toLowerCase().indexOf(".rar") > 0){
@@ -81,10 +82,8 @@ var getZipContent = function(archPath, callback){
             }
         });
     });
-    readStream.on("error", function(err){
-        callback("");
-        return;
-        console.log("error in readstream");
+    readStream.on("close", function(err){
+        removeFile(archPath);
     });
 };
 
