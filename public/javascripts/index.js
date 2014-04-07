@@ -5,6 +5,8 @@ $(document).ready(function(){
             getSub();
         }
     });
+
+    $("#right_slider").css({"right":window.innerWidth / 4});
 });
 
 var getSub = function(){

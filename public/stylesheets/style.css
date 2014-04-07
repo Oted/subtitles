@@ -5,7 +5,7 @@ body{}
 }
 
 .bottom-buffer {
-    margin-bottom: 40px;
+    margin-bottom: 15px;
 }
 
 .image-loader {
@@ -28,4 +28,11 @@ body{}
     transition-property: left;
     transition-duration: 2s;   
     left:-1000px;
+}
+
+#right_slider{
+    position: fixed;
+    transition-property: right;
+    transition-duration: 3s;   
+    right:-1000px;
 }
