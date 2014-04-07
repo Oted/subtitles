@@ -1,10 +1,6 @@
 var jsdom = require("jsdom"),
     util = require("./util.js"),
-    archivehandler = require("./archiveHandler.js"),
-    
-    //minimum level for levenstein, if no result is below this the quaility will
-    //be set to 0 and the final result will show up in yellow. 
-    levenDistanceMin = 0.31;
+    archivehandler = require("./archiveHandler.js");
 
 /**
  *  Called from router with the url to crawl, injects respose object
@@ -13,14 +9,20 @@ exports.getData = function(target, query, targetLanguage, res){
     var url = target + query,
         bestPossible = [],
         worstPossible = [];
-
     console.log("Request received : " + url);
     if (!target) res.send(500, { error: "something blew up :o" });
     
     jsdom.env(url, function(errors, window){
         var document = window.document,
-            a1s = document.getElementsByClassName("a1");
+            a1s = document.getElementsByClassName("a1"),
+            //minimum level for levenstein, if no result is below this the quaility will
+            //be set to 0 and the final result will show up in yellow. 
+            levenDistanceMin = 0.31;
 
+        if (errors){
+            res.send(404, "Sorry, nothing could be found :(");
+            window.close();
+        }
         for (var i = 0; i < a1s.length; i++){
             var data = a1s[i],
                 language = data.getElementsByTagName("span")[0].textContent.toLowerCase(),
@@ -45,6 +47,7 @@ exports.getData = function(target, query, targetLanguage, res){
                     exports.getData(newTarget, "", targetLanguage, res);
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
+                    window.close();
                 }
             });
         } else if (bestPossible.length > 0){
@@ -54,13 +57,16 @@ exports.getData = function(target, query, targetLanguage, res){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"1"});
                             res.end();
+                            window.close();
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");
+                            window.close();
                         }
                     });
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
-                }
+                    window.close();
+                };
             });
         } else {
             getBestUrls(worstPossible, function(best){
@@ -69,17 +75,20 @@ exports.getData = function(target, query, targetLanguage, res){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"0"});
                             res.end();
+                            window.close();
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");
+                            window.close();
                         }
                     });
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
+                    window.close();
                 }
             });
-        }
+        };
     });
-}
+};
 
 /**
  * If search suggest movie titles, compare the distance and select 
@@ -118,7 +127,9 @@ var getBestUrls = function(urls, callbackhell){
         jsdom.env(urls[j], function(errors, window){
             var document = window.document,
                 details = document.getElementsByClassName("details");
-            
+            if (errors){ 
+                callback(best);
+            } 
             for (var i = 0; i < details.length; i++){
                 var data = details[i],
                     list = data.getElementsByTagName("ul")[0].getElementsByTagName("li");
@@ -136,6 +147,7 @@ var getBestUrls = function(urls, callbackhell){
                         if (waiting < 1){ 
                             callbackhell(best);
                         }
+                        window.close();
                         break;
                     }
                 }

@@ -8,60 +8,85 @@ var http = require("http"),
  */
 exports.extractFile = function(url, callback){
     var file;
-
     var request = http.get(url, function(res) {
         var resFileType = res.headers["content-disposition"].split(".").pop(),
             archiveFileName;
         
         console.log(resFileType + " file found, extracting...")    
         if (resFileType === "zip"){
-            archiveFileName = "temp.zip";
+            archiveFileName = "./achives/" + new Date().getTime() + ".zip";
         } else if (resFileType === "rar"){
-           archiveFileName = "temp.rar";
+            archiveFileName = "./achives/" + new Date().getTime() + ".rar";
         } else {
             console.log("Invalid response file " + resFileType);
             callback("");
-            return ;
         }
-
         file = fs.createWriteStream(archiveFileName);
         res.pipe(file);
         file.on("finish", function() {
+            res.emit("end");
             if (resFileType === "zip"){
-                getZipContent("./temp.zip", function(fileName){
+                getZipContent(archiveFileName, function(fileName){
+                    callback(fileName);
+                });
+            } else if (resFileType === "rar") {
+                getRarContent(archiveFileName, function(fileName){
                     callback(fileName);
                 });
             } else {
-                getRarContent("./temp.rar", function(fileName){
-                    callback(fileName);
-                });
+                callback("");
             }
+            file.end();
         });
+    }).on("error", function(){
+        callback("");
     });
 };
 
 var getZipContent = function(archPath, callback){
-    fs.createReadStream(archPath, {"autoClose":true}).pipe(unzip.Parse()).on("entry", function (entry) {
-        var fileName = entry.path;
-        if (fileName.toLowerCase().indexOf(".srt") > 0) {
-            var stream = fs.createWriteStream("output/"+fileName);
-            stream.on("close", function() {
-                callback(fileName)
-            });
-            entry.pipe(stream);
-        } else if (fileName.toLowerCase().indexOf(".rar") > 0){
-            var stream = fs.createWriteStream("output/"+fileName);
-            stream.on("close", function() {
-                getRarContent("output/"+fileName, callback) 
-            });
-            entry.pipe(stream);
-        } else {
-            entry.autodrain();
-        }
-    }).on("error", function(){
-        callback("");
+    var readStream = fs.createReadStream(archPath, {"autoClose":true}),
+        parser = unzip.Parse();
+
+    readStream.on("open", function(){
+        readStream.pipe(parser)
+        .on("entry", function (entry){
+            var fileName = entry.path;
+            if (fs.existsSync("./output/" + fileName)) {
+                callback(fileName);
+                parser.emit("close");
+                removeFile(archPath);
+            } else {
+                if (fileName.toLowerCase().indexOf(".srt") > 0) {
+                    var stream = fs.createWriteStream("./output/"+fileName,{flags:"w", autoClose:true});
+                    entry.pipe(stream);
+                    stream.on("finish",function(){
+                        callback(fileName);
+                        parser.emit("close");
+                        removeFile(archPath);
+                    });
+                    stream.on("error", function(){
+                        parser.emit("close");
+                        callback(""); 
+                    });
+                } else if (fileName.toLowerCase().indexOf(".rar") > 0){
+                    /*var stream = fs.createWriteStream("output/"+fileName);
+                    stream.on("close", function() {
+                        getRarContent("output/"+fileName, callback) 
+                    });
+                    entry.pipe(stream);*/
+                    entry.autodrain();
+                } else {
+                    entry.autodrain();
+                }
+            }
+        });
     });
-}
+    readStream.on("error", function(err){
+        callback("");
+        return;
+        console.log("error in readstream");
+    });
+};
 
 // not yet implemented
 var getRarContent = function(archPath, callback){
@@ -92,4 +117,12 @@ var getRarContent = function(archPath, callback){
    */
 } 
 
-
+var removeFile = function(filePath){
+    console.log("removing " + filePath);
+    if (fs.existsSync(filePath)) {
+        fs.unlink(filePath, function (err) {
+            if (err) console.log("could not delete " + filePath);
+            else console.log('successfully deleted : '+ filePath);
+        });
+    };
+};
