@@ -57,12 +57,14 @@ var getZipContent = function(archPath, callback){
                 readStream.emit("close");
             } else {
                 if (fileName.toLowerCase().indexOf(".srt") > 0) {
-                    var stream = fs.createWriteStream("./output/"+fileName,{flags:"w", autoClose:true});
-                    entry.pipe(stream);
+                    var stream = fs.createWriteStream("./output/"+fileName);
+                    stream.on("open", function(){
+                        entry.pipe(stream);
+                    });
                     stream.on("finish",function(){
-                        callback(fileName);
                         parser.emit("close");
                         readStream.emit("close");
+                        callback(fileName);
                     });
                     stream.on("error", function(){
                         parser.emit("close");
@@ -70,11 +72,6 @@ var getZipContent = function(archPath, callback){
                         callback(""); 
                     });
                 } else if (fileName.toLowerCase().indexOf(".rar") > 0){
-                    /*var stream = fs.createWriteStream("output/"+fileName);
-                    stream.on("close", function() {
-                        getRarContent("output/"+fileName, callback) 
-                    });
-                    entry.pipe(stream);*/
                     entry.autodrain();
                 } else {
                     entry.autodrain();
@@ -82,8 +79,11 @@ var getZipContent = function(archPath, callback){
             }
         });
     });
-    readStream.on("close", function(err){
+    readStream.on("close", function(){
         removeFile(archPath);
+    });
+    readStream.on("error", function(err){
+        console.log(err+"\n");
     });
 };
 

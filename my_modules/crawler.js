@@ -21,7 +21,6 @@ exports.getData = function(target, query, targetLanguage, res){
 
         if (errors){
             res.send(404, "Sorry, nothing could be found :(");
-            window.close();
         }
         for (var i = 0; i < a1s.length; i++){
             var data = a1s[i],
@@ -47,7 +46,6 @@ exports.getData = function(target, query, targetLanguage, res){
                     exports.getData(newTarget, "", targetLanguage, res);
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
-                    window.close();
                 }
             });
         } else if (bestPossible.length > 0){
@@ -57,15 +55,12 @@ exports.getData = function(target, query, targetLanguage, res){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"1"});
                             res.end();
-                            window.close();
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");
-                            window.close();
                         }
                     });
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
-                    window.close();
                 };
             });
         } else {
@@ -75,15 +70,12 @@ exports.getData = function(target, query, targetLanguage, res){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"0"});
                             res.end();
-                            window.close();
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");
-                            window.close();
                         }
                     });
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
-                    window.close();
                 }
             });
         };
@@ -147,7 +139,6 @@ var getBestUrls = function(urls, callbackhell){
                         if (waiting < 1){ 
                             callbackhell(best);
                         }
-                        window.close();
                         break;
                     }
                 }
