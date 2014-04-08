@@ -12,7 +12,6 @@ exports.extractFile = function(url, callback){
         var resFileType = res.headers["content-disposition"].split(".").pop(),
             archiveFileName;
         
-        console.log(resFileType + " file found, extracting...")    
         if (resFileType === "zip"){
             archiveFileName = "./achives/" + new Date().getTime() + ".zip";
         } else if (resFileType === "rar"){
@@ -117,7 +116,6 @@ var getRarContent = function(archPath, callback){
 } 
 
 var removeFile = function(filePath){
-    console.log("removing " + filePath);
     if (fs.existsSync(filePath)) {
         fs.unlink(filePath, function (err) {
             if (err) console.log("could not delete " + filePath);

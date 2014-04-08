@@ -6,14 +6,8 @@ exports.levenstein = function(one, two){
     var matrix = [],
         cost;
     
-    one = one.replace(/ /g, ".");
-    two = two.replace(/ /g, ".");
-
-    one = one.replace(/[#_,\-\+()\t\n]*/g,"");
-    two = two.replace(/[#_,\-\+()\t\n]*/g,"");
-
-    one = one.replace(/\[.+\]/g,"");
-    two = two.replace(/\[.+\]/g,"");
+    one = this.strip(one);
+    two = this.strip(two);
 
     if (one.length < 1 || two.length < 1) return 100000;
     else {
@@ -38,4 +32,14 @@ exports.levenstein = function(one, two){
         value = matrix[one.length-1][two.length-1] / ((one.length + two.length) / 2); 
         return value;
     }
-}
+};
+
+/**
+ * Strips a string down to its bones
+ */
+exports.strip = function(str){
+    str = str.replace(/ /g, ".");
+    str = str.replace(/[#_,\-\+()\t\n]*/g,"");
+    str = str.replace(/\[.+\]/g,"");
+    return str.toLowerCase();
+};

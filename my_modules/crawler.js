@@ -1,6 +1,31 @@
 var jsdom = require("jsdom"),
     util = require("./util.js"),
-    archivehandler = require("./archiveHandler.js");
+    archivehandler = require("./archiveHandler.js"),
+    cache = [],
+    CacheEntity = require("./CacheEntity.js");
+
+/**
+ * Checks if this search has been cached before
+ */
+exports.checkCache = function(query, language, callback){
+    if (cache.length === 0){
+        callback("");
+        return;
+    }
+    for (var i = cache.length - 1; i >= 0; i--){
+        var entity = cache[i];
+        if (entity.equals(query, language)){
+            callback(entity.getValue());
+            break;
+        } else if (entity.hasExpired()){
+            console.log(entity.getValue() + " has been removed from cache.");
+            cache.splice(i, 1);
+        }
+        if (i === 0){
+            callback("");
+        }
+    }
+};
 
 /**
  *  Called from router with the url to crawl, injects respose object
@@ -9,6 +34,7 @@ exports.getData = function(target, query, targetLanguage, res){
     var url = target + query,
         bestPossible = [],
         worstPossible = [];
+   
     console.log("Request received : " + url);
     if (!target) res.send(500, { error: "something blew up :o" });
     
@@ -20,7 +46,7 @@ exports.getData = function(target, query, targetLanguage, res){
             levenDistanceMin = 0.31;
 
         if (errors){
-            res.send(404, "Sorry, nothing could be found :(");
+            res.send(404, "Sorry, nothing could be found, maybe you need to be more specific?");
         }
         for (var i = 0; i < a1s.length; i++){
             var data = a1s[i],
@@ -41,13 +67,8 @@ exports.getData = function(target, query, targetLanguage, res){
         }
         
         if (worstPossible.length < 1 && bestPossible.length < 1) {
-            fallbackSearch(document, query, function(newTarget){
-                if (newTarget){
-                    exports.getData(newTarget, "", targetLanguage, res);
-                } else {
-                    res.send(404, "Sorry, nothing could be found :(");
-                }
-            });
+            res.send(404, "Sorry, nothing could be found, maybe you need to be more specific?");
+            window.close();
         } else if (bestPossible.length > 0){
             getBestUrls(bestPossible, function(best){
                 if (best.url.length > 0){
@@ -55,12 +76,15 @@ exports.getData = function(target, query, targetLanguage, res){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"1"});
                             res.end();
+                            cache.push(new CacheEntity(query, fileName, targetLanguage));
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");
+                            window.close();
                         }
                     });
                 } else {
                     res.send(404, "Sorry, nothing could be found :(");
+                    window.close();
                 };
             });
         } else {
@@ -85,7 +109,7 @@ exports.getData = function(target, query, targetLanguage, res){
 /**
  * If search suggest movie titles, compare the distance and select 
  * the best matching movie option, let getData call itself recurivley with 
- * the new url found.
+ * the new url found, not used at the moment
  *
  */
 var fallbackSearch = function(document, query, callback){
@@ -120,7 +144,9 @@ var getBestUrls = function(urls, callbackhell){
             var document = window.document,
                 details = document.getElementsByClassName("details");
             if (errors){ 
-                callback(best);
+                callbackhell(best);
+                window.close();
+                return ;
             } 
             for (var i = 0; i < details.length; i++){
                 var data = details[i],
@@ -138,11 +164,13 @@ var getBestUrls = function(urls, callbackhell){
                         
                         if (waiting < 1){ 
                             callbackhell(best);
+                            window.close();
+                            return ;
                         }
                         break;
                     }
-                }
-            }
+                };
+            };
         });
-    } 
-}
+    };
+};
