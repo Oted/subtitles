@@ -43,9 +43,9 @@ var getSub = function(){
             $("#result").addClass("btn-danger");
             document.getElementById("result").href = "#";
             if ($("#language").val() === "English"){
-                document.getElementById("result").innerHTML = "Sorry, no subtitle could be found";
+                document.getElementById("result").innerHTML = "Nothing found, maybe you need to be more specfic?";
             } else {
-                document.getElementById("result").innerHTML = "No subtitle could be found, try selecting English instead";
+                document.getElementById("result").innerHTML = "No subtitle could be found, try selecting English instead!";
             }
         }
     });

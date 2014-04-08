@@ -60,9 +60,9 @@ exports.getData = function(target, query, targetLanguage, res){
                 bestPossible = [];
                 bestPossible.push(url);
             } else if (language.indexOf(targetLanguage) >= 0 && newDistance === levenDistanceMin){
-                bestPossible.push(url);  
+                if (bestPossible.indexOf(url) < 0) bestPossible.push(url);  
             } else if (language.indexOf(targetLanguage) >= 0){
-                worstPossible.push(url);
+                if (worstPossible.indexOf(url) < 0) worstPossible.push(url);  
             }
         }
         
@@ -75,7 +75,6 @@ exports.getData = function(target, query, targetLanguage, res){
                     archivehandler.extractFile(best.url, function(fileName){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"1"});
-                            res.end();
                             cache.push(new CacheEntity(query, fileName, targetLanguage));
                         } else {
                             res.send(404, "Sorry, nothing could be found :(");

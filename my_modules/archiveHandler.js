@@ -50,31 +50,25 @@ var getZipContent = function(archPath, callback){
         readStream.pipe(parser)
         .on("entry", function (entry){
             var fileName = entry.path;
-            if (fs.existsSync("./output/" + fileName)) {
-                callback(fileName);
-                parser.emit("close");
-                readStream.emit("close");
+            if (isSubtitle(fileName.toLowerCase())) {
+                var stream = fs.createWriteStream("./output/"+fileName);
+                stream.on("open", function(){
+                    entry.pipe(stream);
+                });
+                stream.on("finish",function(){
+                    parser.emit("close");
+                    readStream.emit("close");
+                    callback(fileName);
+                });
+                stream.on("error", function(){
+                    parser.emit("close");
+                    readStream.emit("close");
+                    callback(""); 
+                });
+            } else if (fileName.toLowerCase().indexOf(".rar") > 0){
+                entry.autodrain();
             } else {
-                if (fileName.toLowerCase().indexOf(".srt") > 0) {
-                    var stream = fs.createWriteStream("./output/"+fileName);
-                    stream.on("open", function(){
-                        entry.pipe(stream);
-                    });
-                    stream.on("finish",function(){
-                        parser.emit("close");
-                        readStream.emit("close");
-                        callback(fileName);
-                    });
-                    stream.on("error", function(){
-                        parser.emit("close");
-                        readStream.emit("close");
-                        callback(""); 
-                    });
-                } else if (fileName.toLowerCase().indexOf(".rar") > 0){
-                    entry.autodrain();
-                } else {
-                    entry.autodrain();
-                }
+                entry.autodrain();
             }
         });
     });
@@ -122,4 +116,19 @@ var removeFile = function(filePath){
             else console.log('successfully deleted : '+ filePath);
         });
     };
+};
+
+var isSubtitle = function(fileName){
+    file = fileName.split(".").pop();
+    var postFix = ["srt", "ass", "ssa", "sub", "jss", "gsub", "usf", "idx"];
+    
+    for (var i = postFix.length - 1; i >=0; i--){
+        if (file === postFix[i]){
+            return true;
+            break;
+        }
+        if (i === 0){
+            return false;
+        }
+    }
 };
