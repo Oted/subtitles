@@ -10,26 +10,15 @@ exports.extractFile = function(url, callback){
     var file;
     var request = http.get(url, function(res) {
         var resFileType = res.headers["content-disposition"].split(".").pop(),
-            archiveFileName;
+            archiveFileName = res.headers["content-disposition"].split("=").pop(),
+            uniqueName = new Date().getTime(); 
         
-        if (resFileType === "zip"){
-            archiveFileName = "./achives/" + new Date().getTime() + ".zip";
-        } else if (resFileType === "rar"){
-            archiveFileName = "./achives/" + new Date().getTime() + ".rar";
-        } else {
-            console.log("Invalid response file " + resFileType);
-            callback("");
-        }
-        file = fs.createWriteStream(archiveFileName);
+        file = fs.createWriteStream("./archives/" + archiveFileName);
         res.pipe(file);
         file.on("finish", function() {
             res.emit("end");
-            if (resFileType === "zip"){
-                getZipContent(archiveFileName, function(fileName){
-                    callback(fileName);
-                });
-            } else if (resFileType === "rar") {
-                getRarContent(archiveFileName, function(fileName){
+            if (archiveFileName){
+                getArchiveContent(archiveFileName, uniqueName, function(fileName){
                     callback(fileName);
                 });
             } else {
@@ -42,85 +31,76 @@ exports.extractFile = function(url, callback){
     });
 };
 
-var getZipContent = function(archPath, callback){
-    var readStream = fs.createReadStream(archPath, {"autoClose":true}),
-        parser = unzip.Parse();
+//unzip file from server
+var getArchiveContent = function(archiveFileName, uniqueName, callback){
+    var exec = require('child_process').exec,
+        child,
+        fileType = archiveFileName.split(".").pop();
 
-    readStream.on("open", function(){
-        readStream.pipe(parser)
-        .on("entry", function (entry){
-            var fileName = entry.path;
-            if (isSubtitle(fileName.toLowerCase())) {
-                var stream = fs.createWriteStream("./output/"+fileName);
-                stream.on("open", function(){
-                    entry.pipe(stream);
-                });
-                stream.on("finish",function(){
-                    parser.emit("close");
-                    readStream.emit("close");
-                    callback(fileName);
-                });
-                stream.on("error", function(){
-                    parser.emit("close");
-                    readStream.emit("close");
-                    callback(""); 
-                });
-            } else if (fileName.toLowerCase().indexOf(".rar") > 0){
-                entry.autodrain();
+    if (fileType === "zip"){
+        child = exec("unzip " + "./archives/" + archiveFileName + " -d ./archives/" + uniqueName + "/",function (error, stdout, stderr) {
+            if (error) {
+                console.log("exec error: " + error);
+                callback("");
             } else {
-                entry.autodrain();
+                checkContent(archiveFileName, uniqueName, callback);
+            }
+        }); 
+    } else if (fileType === "rar"){
+        child = exec("unrar e " + "./archives/" + archiveFileName + " ./archives/" + uniqueName + "/",function (error, stdout, stderr) {
+            if (error) {
+                console.log("exec error: " + error);
+                callback("");
+            } else {
+                checkContent(archiveFileName, uniqueName, callback);
+            }
+        }); 
+    } else {
+        callback("");
+    };
+};
+
+var checkContent = function(archiveFileName, uniqueName, callback){
+    var subtitles = [],
+        fileType = archiveFileName.split(".").pop();
+
+    fs.readdir("./archives/"+uniqueName+"/", function(err, files){
+        files.forEach(function(file){
+            if (isSubtitle(file)){
+                subtitles.push(file);
             }
         });
-    });
-    readStream.on("close", function(){
-        removeFile(archPath);
-    });
-    readStream.on("error", function(err){
-        console.log(err+"\n");
+        if (subtitles.length == 1){
+            fs.rename("./archives/"+uniqueName+"/"+subtitles[0], "./output/" + subtitles[0], function(){
+                callback(subtitles[0]);
+                removeFiles(archiveFileName, uniqueName);
+            });    
+        } else if (subtitles.length > 1){
+            fs.rename("./archives/" + archiveFileName, "./output/" + archiveFileName, function(){
+                callback(archiveFileName);
+                removeFiles(archiveFileName, uniqueName);
+            });
+        } else {
+            console.log("Archive seems to be empty");
+            removeFiles(archiveFileName, uniqueName);
+            callback("");
+        } 
     });
 };
 
-// not yet implemented
-var getRarContent = function(archPath, callback){
-    callback("");
-    /*rarjs({"type": rarjs.OPEN_LOCAL, "file":archPath}, function(err) {
-        var that = this;
-        if (err) {
-            console.log("There was an error opening the rarfile");
-            return;
-        } else {
-            this.entries.forEach(function(entry){
-                 var fileName = entry.name;
-                 if (fileName.toLowerCase().indexOf(".srt") > 0) {
-                    that.get(entry, function(data){
-                        var stream = fs.createWriteStream("output/"+fileName);
-                        console.log(data);
-                        stream.on("close", function() {
-                            callback(fileName);
-                        });
-                        data.pipe(stream);     
-                        
-                        });
-               
-                }
-            });
-        }
-    });
-   */
-} 
+var removeFiles = function(archiveFileName, uniqueName){
+    var dir = "./archives/" + uniqueName,
+        archive = "./archives/" + archiveFileName,
+        exec = require('child_process').exec,
+        child;
 
-var removeFile = function(filePath){
-    if (fs.existsSync(filePath)) {
-        fs.unlink(filePath, function (err) {
-            if (err) console.log("could not delete " + filePath);
-            else console.log('successfully deleted : '+ filePath);
-        });
-    };
+    child = exec("rm -rf " + dir, function (error, stdout, stderr){}); 
+    child = exec("rm " + archive ,function (error, stdout, stderr) {}); 
 };
 
 var isSubtitle = function(fileName){
     file = fileName.split(".").pop();
-    var postFix = ["srt", "ass", "ssa", "sub", "jss", "gsub", "usf", "idx"];
+    var postFix = ["txt", "srt", "ass", "ssa", "sub", "jss", "gsub", "usf", "idx"];
     
     for (var i = postFix.length - 1; i >=0; i--){
         if (file === postFix[i]){

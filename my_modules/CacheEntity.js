@@ -15,7 +15,7 @@ function CE(key, value, language){
 
 CE.prototype.hasExpired = function(){
     var difference = difference = new Date() - this.created;
-    return Math.round(difference/(1000*60*60)) > 30;
+    return Math.round(difference/(1000*60*60)) > 24;
 };
 
 CE.prototype.equals = function(query, language){

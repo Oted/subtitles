@@ -8,6 +8,8 @@ var jsdom = require("jsdom"),
  * Checks if this search has been cached before
  */
 exports.checkCache = function(query, language, callback){
+    console.log();
+    console.log("--------- " + new Date().toString()  + " -----------");
     if (cache.length === 0){
         callback("");
         return;
