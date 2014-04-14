@@ -29,7 +29,13 @@ exports.levenstein = function(one, two){
             }
         }
 
-        value = matrix[one.length-1][two.length-1] / ((one.length + two.length) / 2); 
+        value = matrix[one.length-1][two.length-1] / (Math.min(one.length + two.length)); 
+        
+        // console.log(one);
+        // console.log(two);
+        // console.log(value);
+        // console.log();
+
         return value;
     }
 };
