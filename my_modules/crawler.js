@@ -39,15 +39,16 @@ exports.getData = function(target, query, targetLanguage, res){
     if (!target) res.send(500, { error: "something blew up :o" });
     
     jsdom.env(url, function(errors, window){
+        if (errors){
+            res.send(404, "Sorry, nothing could be found, maybe you need to be more specific?");
+            return ;
+        }
         var document = window.document,
             a1s = document.getElementsByClassName("a1"),
             //minimum level for levenstein, if no result is below this the quaility will
             //be set to 0 and the final result will show up in yellow. 
             levenDistanceMin = 0.31;
 
-        if (errors){
-            res.send(404, "Sorry, nothing could be found, maybe you need to be more specific?");
-        }
         for (var i = 0; i < a1s.length; i++){
             var data = a1s[i],
                 language = data.getElementsByTagName("span")[0].textContent.toLowerCase(),
