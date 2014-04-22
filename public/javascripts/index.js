@@ -15,7 +15,7 @@ var getSub = function(){
     $.ajax({
         url: "/get/?language="+ $("#language").val() +"&title="+title.replace(/_/g,"."),
         cache: false,
-        timeout: 1000,
+        timeout: 20000,
         beforeSend: function(){
             $("#result").hide();
             document.getElementById("result").innerHTML = "";
@@ -33,20 +33,27 @@ var getSub = function(){
             $("#image_loader").hide();
             document.getElementById("result").href = "/output/"+data.filename;
             document.getElementById("result").innerHTML= data.filename;
+            
             $("#result").show(200);
-
+            if (Math.random() > 0.7){
+                document.getElementById("slider").innerHTML = "Any thoughts or feedback? Contact us at swiftsubs.feedback@gmail.com";
+            } else {
+                document.getElementById("slider").innerHTML = "You may right click and save as to place the file in the right folder";
+            }
             $("#slider").css({"left":window.innerWidth / 2});
         },
         error:function (xhr, ajaxOptions, thrownError){
-            console.log("Ajax request failed");
+            console.log("Ajax request failed " + i);
             $("#result").show(200);
             $("#image_loader").hide();
             $("#result").removeClass("btn-success");
             $("#result").addClass("btn-danger");
             document.getElementById("result").href = "#";
             document.getElementById("sub_title").value = "";
-            if (i++ > 2){
+            if (++i > 2){
                 document.getElementById("result").innerHTML = "Nothing could be found, sorry"; 
+                document.getElementById("slider").innerHTML = "Any thoughts or feedback? Contact us at swiftsubs.feedback@gmail.com";
+                $("#slider").css({"left":window.innerWidth / 2});
             } else if ($("#language").val() === "English"){
                 document.getElementById("result").innerHTML = "Nothing found, maybe you need to be more specfic?";
             } else {
