@@ -62,7 +62,9 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
 
 var checkContent = function(archiveFileName, uniqueName, callback){
     var subtitles = [],
-        fileType = archiveFileName.split(".").pop();
+        fileType = archiveFileName.split(".").pop(),
+        //do this
+        archiveName = archiveFileName.substring(0, archiveFileName.lastIndexOf("."));
 
     fs.readdir("./archives/"+uniqueName+"/", function(err, files){
         files.forEach(function(file){

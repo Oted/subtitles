@@ -47,7 +47,7 @@ exports.getData = function(target, query, targetLanguage, res){
             a1s = document.getElementsByClassName("a1"),
             //minimum level for levenstein, if no result is below this the quaility will
             //be set to 0 and the final result will show up in yellow. 
-            levenDistanceMin = 0.31;
+            levenDistanceMin = 0.28;
 
         for (var i = 0; i < a1s.length; i++){
             var data = a1s[i],

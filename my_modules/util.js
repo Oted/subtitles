@@ -29,16 +29,34 @@ exports.levenstein = function(one, two){
             }
         }
 
-        value = matrix[one.length-1][two.length-1] / (Math.min(one.length + two.length)); 
-        
-        // console.log(one);
-        // console.log(two);
-        // console.log(value);
-        // console.log();
-
-        return value;
+        value = matrix[one.length-1][two.length-1] / (Math.max(one.length, two.length)); 
+        return modifyLevenValue(value, one, two);
     }
 };
+
+//lol
+var modifyLevenValue = function(value, one, two){
+    var newValue = 0,
+        oneArr = one.split("."),
+        twoArr = two.split("."),
+        iterate = Math.min(oneArr.length, twoArr.length),
+        partValue = value / iterate,
+        oneSE = one.search(/s[0-9][0-9]e[0-9][0-9]/g),
+        twoSE = two.search(/s[0-9][0-9]e[0-9][0-9]/g);
+
+    if (oneSE !== -1 && twoSE !== -1){
+        if (one.substring(oneSE, oneSE + 6) !== two.substring(twoSE, twoSE + 6)){
+            value += 0.31 + value;
+        }
+    }
+    
+    return value; 
+    // for (var i = 0; i < iterate; i++){
+        // var oneSubString = oneArr[i],
+            // twoSubString = twoArr[i];
+    // }
+};
+
 
 /**
  * Strips a string down to its bones
