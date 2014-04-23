@@ -50,11 +50,14 @@ var modifyLevenValue = function(value, one, two){
         }
     }
     
-    return value; 
     // for (var i = 0; i < iterate; i++){
         // var oneSubString = oneArr[i],
             // twoSubString = twoArr[i];
+     
+    
     // }
+    
+    return value; 
 };
 
 
@@ -64,6 +67,6 @@ var modifyLevenValue = function(value, one, two){
 exports.strip = function(str){
     str = str.replace(/ /g, ".");
     str = str.replace(/[#_,\-\+()\t\n]*/g,"");
-    str = str.replace(/\[.+\]/g,"");
+    str = str.replace(/\[[^\].]+\]$/,"");
     return str.toLowerCase();
 };
