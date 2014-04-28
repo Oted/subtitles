@@ -1,7 +1,5 @@
 var http = require("http"),
-    fs = require("fs"),
-    unzip = require("unzip"),
-    rarjs = require("rarjs");
+    fs = require("fs");
     
 /**
  *  get the rarfile of the best result and extracts the srt file  
@@ -17,6 +15,7 @@ exports.extractFile = function(url, callback){
         res.pipe(file);
         file.on("finish", function() {
             res.emit("end");
+            request.end();
             if (archiveFileName){
                 getArchiveContent(archiveFileName, uniqueName, function(fileName){
                     callback(fileName);
@@ -38,7 +37,8 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
         fileType = archiveFileName.split(".").pop();
 
     if (fileType === "zip"){
-        child = exec("unzip " + "./archives/" + archiveFileName + " -d ./archives/" + uniqueName + "/",function (error, stdout, stderr) {
+        child = exec("unzip " + "./archives/" + archiveFileName + " -d ./archives/" + uniqueName + "/",
+                function (error, stdout, stderr) {
             if (error) {
                 console.log("exec error: " + error);
                 callback("");
@@ -47,7 +47,8 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
             }
         }); 
     } else if (fileType === "rar"){
-        child = exec("unrar e " + "./archives/" + archiveFileName + " ./archives/" + uniqueName + "/",function (error, stdout, stderr) {
+        child = exec("unrar e " + "./archives/" + archiveFileName + " ./archives/" + uniqueName + "/",
+                function (error, stdout, stderr) {
             if (error) {
                 console.log("exec error: " + error);
                 callback("");
@@ -65,7 +66,7 @@ var checkContent = function(archiveFileName, uniqueName, callback){
         fileType = archiveFileName.split(".").pop(),
         //do this
         archiveName = archiveFileName.substring(0, archiveFileName.lastIndexOf("."));
-
+    
     fs.readdir("./archives/"+uniqueName+"/", function(err, files){
         files.forEach(function(file){
             if (isSubtitle(file)){

@@ -36,7 +36,6 @@ exports.levenstein = function(one, two){
 
 //lol
 var modifyLevenValue = function(value, one, two){
-    var newValue = 0,
         oneArr = one.split("."),
         twoArr = two.split("."),
         iterate = Math.min(oneArr.length, twoArr.length),
