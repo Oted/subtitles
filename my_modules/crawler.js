@@ -72,7 +72,7 @@ exports.getData = function(target, query, targetLanguage, res){
         } else if (bestPossible.length > 0){
             getBestUrls(bestPossible, function(best){
                 if (best.url.length > 0){
-                    archivehandler.extractFile(best.url, function(fileName){
+                    archivehandler.extractFile(best.url, targetLanguage, function(fileName){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"1"});
                             cache.push(new CacheEntity(query, fileName, targetLanguage));   
@@ -88,7 +88,7 @@ exports.getData = function(target, query, targetLanguage, res){
         } else {
             getBestUrls(worstPossible, function(best){
                 if (best.url.length > 0){
-                    archivehandler.extractFile(best.url, function(fileName){
+                    archivehandler.extractFile(best.url, targetLanguage, function(fileName){
                         if (fileName){
                             res.json({"filename" : fileName, "quality":"0"});
                             res.end();

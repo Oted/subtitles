@@ -4,7 +4,7 @@ var http = require("http"),
 /**
  *  get the rarfile of the best result and extracts the srt file  
  */
-exports.extractFile = function(url, callback){
+exports.extractFile = function(url, language, callback){
     var file;
     var request = http.get(url, function(res) {
         var resFileType = res.headers["content-disposition"].split(".").pop(),
@@ -17,7 +17,7 @@ exports.extractFile = function(url, callback){
             res.emit("end");
             request.end();
             if (archiveFileName){
-                getArchiveContent(archiveFileName, uniqueName, function(fileName){
+                getArchiveContent(archiveFileName, uniqueName, language, function(fileName){
                     callback(fileName);
                 });
             } else {
@@ -31,7 +31,7 @@ exports.extractFile = function(url, callback){
 };
 
 //unzip file from server
-var getArchiveContent = function(archiveFileName, uniqueName, callback){
+var getArchiveContent = function(archiveFileName, uniqueName, language, callback){
     var exec = require('child_process').exec,
         child,
         fileType = archiveFileName.split(".").pop();
@@ -43,7 +43,7 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
                 console.log("exec error: " + error);
                 callback("");
             } else {
-                checkContent(archiveFileName, uniqueName, callback);
+                checkContent(archiveFileName, uniqueName, language, callback);
             }
         }); 
     } else if (fileType === "rar"){
@@ -53,7 +53,7 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
                 console.log("exec error: " + error);
                 callback("");
             } else {
-                checkContent(archiveFileName, uniqueName, callback);
+                checkContent(archiveFileName, uniqueName, language, callback);
             }
         }); 
     } else {
@@ -61,7 +61,7 @@ var getArchiveContent = function(archiveFileName, uniqueName, callback){
     };
 };
 
-var checkContent = function(archiveFileName, uniqueName, callback){
+var checkContent = function(archiveFileName, uniqueName, language, callback){
     var subtitles = [],
         fileType = archiveFileName.split(".").pop(),
         //do this
@@ -74,13 +74,13 @@ var checkContent = function(archiveFileName, uniqueName, callback){
             }
         });
         if (subtitles.length == 1){
-            fs.rename("./archives/"+uniqueName+"/"+subtitles[0], "./output/" + subtitles[0], function(){
-                callback(subtitles[0]);
+            fs.rename("./archives/"+uniqueName+"/"+subtitles[0], "./output/"+ language + "_" + subtitles[0], function(){
+                callback(language + "_" + subtitles[0]);
                 removeFiles(archiveFileName, uniqueName);
             });    
         } else if (subtitles.length > 1){
-            fs.rename("./archives/" + archiveFileName, "./output/" + archiveFileName, function(){
-                callback(archiveFileName);
+            fs.rename("./archives/" + archiveFileName, "./output/" + language + "_" + archiveFileName, function(){
+                callback(language + "_" + archiveFileName);
                 removeFiles(archiveFileName, uniqueName);
             });
         } else {
