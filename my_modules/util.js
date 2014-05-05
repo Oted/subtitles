@@ -29,12 +29,14 @@ exports.levenstein = function(one, two){
             }
         }
 
-        value = matrix[one.length-1][two.length-1] / (Math.max(one.length, two.length)); 
+        // console.log(one);
+        // console.log(two);
+        var least = Math.min(one.length, two.length)- 1; 
+        value = matrix[least][least] / (Math.max(one.length, two.length)); 
         return modifyLevenValue(value, one, two);
     }
 };
 
-//lol
 var modifyLevenValue = function(value, one, two){
         oneArr = one.split("."),
         twoArr = two.split("."),
@@ -43,17 +45,20 @@ var modifyLevenValue = function(value, one, two){
         oneSE = one.search(/s[0-9][0-9]e[0-9][0-9]/g),
         twoSE = two.search(/s[0-9][0-9]e[0-9][0-9]/g);
 
+        // console.log(one.substring(oneSE, oneSE + 6));
+        // console.log(two.substring(twoSE, twoSE + 6));
     if (oneSE !== -1 && twoSE !== -1){
         if (one.substring(oneSE, oneSE + 6) !== two.substring(twoSE, twoSE + 6)){
-            value += 0.31 + value;
+            value += 0.28 + value;
+            // console.log("added 28");
         }
     }
     
+    // console.log(value);
+    // console.log(); 
     // for (var i = 0; i < iterate; i++){
         // var oneSubString = oneArr[i],
             // twoSubString = twoArr[i];
-     
-    
     // }
     
     return value; 
@@ -65,7 +70,7 @@ var modifyLevenValue = function(value, one, two){
  */
 exports.strip = function(str){
     str = str.replace(/ /g, ".");
-    str = str.replace(/[#_,\-\+()\t\n]*/g,"");
+    str = str.replace(/[#_,\-\+()\t\n]/g,"");
     str = str.replace(/\[[^\].]+\]$/,"");
     return str.toLowerCase();
 };
