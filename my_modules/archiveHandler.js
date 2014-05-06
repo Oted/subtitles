@@ -7,6 +7,12 @@ var http = require("http"),
 exports.extractFile = function(url, language, callback){
     var file;
     var request = http.get(url, function(res) {
+        if (!res || !res.headers || !res.headers["content-disposition"]){
+            callback("");
+            console.log("------- error: res was not defined ---------");
+            return;
+        }
+        
         var resFileType = res.headers["content-disposition"].split(".").pop(),
             archiveFileName = res.headers["content-disposition"].split("=").pop(),
             uniqueName = new Date().getTime(); 
