@@ -55,7 +55,7 @@ var standardLevenstein = function(one, two){
 var modifyLevenValue = function(one, two){
     var oneArr = one.split("."),
         twoArr = two.split("."),
-        oneSE = one.search(/s[0-9][0-9].?e[0-9][0-9]/g),
+        oneSE = one.search(/s[0-9][0-9]e[0-9][0-9]/g),
         twoSE = two.search(/s[0-9][0-9]e[0-9][0-9]/g),
         totalMinValue = 0,
         tempValue,
@@ -91,7 +91,6 @@ var modifyLevenValue = function(one, two){
 
         // console.log(minValue);
         totalMinValue += minValue;
-        console.log(minValue);
         minValue = Infinity;
     }
 
