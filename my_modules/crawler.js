@@ -37,8 +37,6 @@ exports.getData = function(target, query, targetLanguage, res){
         worstPossible = [];
    
     console.log("Request received : " + url);
-    if (!target) res.send(500, { error: "something blew up :o" });
-    
     request(url, function (error, response, html) {
         if (error){
             callback("");

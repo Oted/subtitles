@@ -7,11 +7,11 @@ exports.getTotalLeven = function(one, two){
         standardValue = standardLevenstein(oneStripped, twoStripped),
         modifiedValue  = modifyLevenValue(standardValue, oneStripped, twoStripped) / one.length;
     
-    console.log(oneStripped);
-    console.log(twoStripped);
+    // console.log(oneStripped);
+    // console.log(twoStripped);
 
-    console.log(modifiedValue);
-    console.log();
+    // console.log(modifiedValue);
+    // console.log();
     return modifiedValue;
 };
 
@@ -69,10 +69,9 @@ var modifyLevenValue = function(value, one, two){
                 
                 
                 if (i === 0 && j === 0){
-                    minValue = Math.pow(tempValue, 3);
+                    minValue = Math.pow(tempValue, 5);
                     break;
                 }   
-                // if (i == 1) tempValue *= Math.pow(tempValue, 2);   
                 
                 if (tempValue < minValue){
                     minValue = tempValue; 
