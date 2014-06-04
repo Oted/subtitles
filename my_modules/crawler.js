@@ -9,6 +9,9 @@ var util = require("./util.js"),
  * Checks if this search has been cached before
  */
 exports.checkCache = function(query, language, callback){
+    var exec = require('child_process').exec,
+        child;
+
     if (cache.length === 0){
         callback("");
         return;
@@ -19,8 +22,10 @@ exports.checkCache = function(query, language, callback){
             callback(entity.getValue());
             break;
         } else if (entity.hasExpired()){
-            console.log(entity.getValue() + " has been removed from cache.");
+            console.log(entity.getValue());
+            child = exec("rm ./output/" + entity.getValue(), function (error, stdout, stderr){}); 
             cache.splice(i, 1);
+            console.log(entity.getValue() + " has been removed from cache.");
         }
         if (i === 0){
             callback("");

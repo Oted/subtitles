@@ -3,6 +3,13 @@ var util = require("./util.js"),
 
 module.exports = CE;
 
+/**
+ *  Object to store chache data, 
+ *  key is the query,
+ *  value is the filename,
+ *  do i have to mention language? 
+ *
+ */
 function CE(key, value, language){
     if (fs.existsSync("./output/"+value)) {
         this.value = value;
@@ -13,6 +20,11 @@ function CE(key, value, language){
     } else console.log("CE could not bew created, file does not exists");
 };
 
+/**
+ *  compares the created date with this moment, 
+ *  if value is larger than 24 hours, the cache is removed, togeter with its file
+ *
+ */
 CE.prototype.hasExpired = function(){
     var difference = difference = new Date() - this.created;
     return Math.round(difference/(1000*60*60)) > 24;

@@ -82,22 +82,22 @@ var checkContent = function(archiveFileName, uniqueName, language, callback){
         if (subtitles.length == 1){
             fs.rename("./archives/"+uniqueName+"/"+subtitles[0], "./output/"+ language + "_" + subtitles[0], function(){
                 callback(language + "_" + subtitles[0]);
-                removeFiles(archiveFileName, uniqueName);
+                removeArchiveFiles(archiveFileName, uniqueName);
             });    
         } else if (subtitles.length > 1){
             fs.rename("./archives/" + archiveFileName, "./output/" + language + "_" + archiveFileName, function(){
                 callback(language + "_" + archiveFileName);
-                removeFiles(archiveFileName, uniqueName);
+                removeArchiveFiles(archiveFileName, uniqueName);
             });
         } else {
             console.log("Archive seems to be empty");
-            removeFiles(archiveFileName, uniqueName);
+            removeArchiveFiles(archiveFileName, uniqueName);
             callback("");
         } 
     });
 };
 
-var removeFiles = function(archiveFileName, uniqueName){
+var removeArchiveFiles = function(archiveFileName, uniqueName){
     var dir = "./archives/" + uniqueName,
         archive = "./archives/" + archiveFileName,
         exec = require('child_process').exec,
