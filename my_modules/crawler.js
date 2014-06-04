@@ -54,7 +54,7 @@ exports.getData = function(target, query, targetLanguage, res){
             var language = $($(data).find("span")[0]).text().toLowerCase(),
                 title = $($(data).find("span")[1]).text().toLowerCase(),
                 url = "http://subscene.com" + $($(data).find("a")[0]).attr("href"),
-                newDistance = util.levenstein(query, title);
+                newDistance = util.getTotalLeven(query, title);
     
             if (language.indexOf(targetLanguage) >= 0 && newDistance < levenDistanceMin) {
                 levenDistanceMin = newDistance;
