@@ -8,14 +8,20 @@ exports.index = function(req, res){
 exports.getSubtitle = function(req, res){
     console.log();
     console.log("--------- " + new Date().toString()  + " -----------");
-    crawler.checkCache(req.query.title.toLowerCase(), req.query.language.toLowerCase() ,function(fileName){
-        if (!fileName){
-            crawler.getData(target, req.query.title.toLowerCase(), req.query.language.toLowerCase(),res); 
-        } else {
-            console.log("Found cache for " + req.query.title + ", " + fileName);
-            res.json({"filename" : fileName, "quality":"1"});
-        }
-    });
+    
+    if (!(req.query.title || req.query.language)){ 
+        res.send(500, { error: "something blew up :o" });
+        console.log("Something blew up!");
+    } else {
+        crawler.checkCache(req.query.title.toLowerCase(), req.query.language.toLowerCase() ,function(fileName){
+            if (!fileName){
+                crawler.getData(target, req.query.title.toLowerCase(), req.query.language.toLowerCase(),res); 
+            } else {
+                console.log("Found cache for " + req.query.title + ", " + fileName);
+                res.json({"filename" : fileName, "quality":"1"});
+            }
+        });
+    }
 };
 
 exports.downloadSubtitle = function(req, res){
