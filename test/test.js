@@ -8,7 +8,7 @@ var should = require("should"),
             {query: "game of thrones s04e03",                   shouldHave: "english_Game.of.Thrones.S04E03.HDTV.x264-KILLERS.srt"},
             {query: "Fargo S01E08 720p HDTV X264-DIMENSION",    shouldHave: "english_Fargo.S01E08.720p.HDTV.X264-DIMENSION.srt"},
             {query: "24 s09e06 720p hdtv x264-dimension",       shouldHave: "english_24.S09E06.HDTV.x264-LOL.srt"},
-            {query: "joy.ride.3.2014.hdrip.xvid.-juggs[etrg]",  shouldHave: "english_Joy.Ride.3.2014.HDRip.XViD.-juggs[ETRG].srt"}    
+            {query: "joy.ride.3.2014.hdrip.xvid.-juggs[etrg]",  shouldHave: "english_Joy Ride 3 2014 HDRip XViD juggs ETRG.srt"}    
         ];
 
 describe("/get/", function() {

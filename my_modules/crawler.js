@@ -44,7 +44,6 @@ exports.getData = function(target, query, targetLanguage, res){
     console.log("Request received : " + url);
     request(url, function (error, response, html) {
         if (error){
-            callback("");
             return ;
         }
         
