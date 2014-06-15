@@ -90,7 +90,8 @@ var modifyLevenValue = function(query, result){
                 tempValue = standardLevenstein(queryArr[i], resultArr[j]);
                 
                 if (i === 0 && j === 0){
-                    if (resultArr[i] !== resultArr[j]){
+                    // console.log(resultArr[i]);
+                    if (resultArr[i] !== queryArr[j]){
                         returnObj.rating = 2; 
                     }
                 } 
