@@ -16,7 +16,6 @@ function CE(key, value, language){
         this.key = util.strip(key);
         this.created = new Date();
         this.language = language;
-        console.log("Created new cache entity " + key + ", " + value);
     } else console.log("CE could not bew created, file does not exists");
 };
 

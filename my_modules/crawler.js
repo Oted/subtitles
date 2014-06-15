@@ -22,7 +22,6 @@ exports.checkCache = function(query, language, callback){
             callback(entity.getValue());
             break;
         } else if (entity.hasExpired()){
-            console.log(entity.getValue());
             child = exec("rm ./output/" + entity.getValue(), function (error, stdout, stderr){}); 
             cache.splice(i, 1);
             console.log(entity.getValue() + " has been removed from cache.");
@@ -76,6 +75,7 @@ exports.getData = function(target, query, targetLanguage, res){
                 if (best.url.length > 0){
                     archivehandler.extractFile(best.url, targetLanguage, function(fileName){
                         if (fileName){
+                            console.log("Responded with good quailty " + fileName + ", new cache has been created.");
                             res.json({"filename" : fileName, "quality":"1"});
                             cache.push(new CacheEntity(query, fileName, targetLanguage));   
                             res.end();
@@ -92,6 +92,7 @@ exports.getData = function(target, query, targetLanguage, res){
                 if (best.url.length > 0){
                     archivehandler.extractFile(best.url, targetLanguage, function(fileName){
                         if (fileName){
+                            console.log("Responded with bad quailty " + fileName);
                             res.json({"filename" : fileName, "quality":"0"});
                             res.end();
                         } else {
