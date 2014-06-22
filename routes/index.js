@@ -5,6 +5,11 @@ exports.index = function(req, res){
     res.render("index",{});
 };
 
+exports.maintenance = function(req, res){
+    res.render("404", {});
+};
+
+    
 exports.getSubtitle = function(req, res){
     console.log();
     console.log("--------- " + new Date().toString()  + " -----------");

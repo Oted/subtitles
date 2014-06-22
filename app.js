@@ -24,11 +24,12 @@ app.set("domain", "82.196.12.214");
 app.set("port", 8080);
 
 //render 
-app.get('/', routes.index);
+app.get('*', routes.maintenance);
+// app.get('/', routes.index);
 
 //api
-app.get('/get/*', routes.getSubtitle);
-app.get('/output/*', routes.downloadSubtitle);
+// app.get('/get/*', routes.getSubtitle);
+// app.get('/output/*', routes.downloadSubtitle);
 
 //render
 
