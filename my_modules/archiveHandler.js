@@ -1,6 +1,6 @@
 var http = require("http"),
     fs = require("fs");
-    
+
 /**
  *  get the rarfile of the best result and extracts the srt file  
  */
