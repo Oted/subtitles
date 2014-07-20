@@ -26,6 +26,9 @@ var getSub = function(){
             if (data.quality === "1"){
                 $("#result").removeClass("btn-danger btn-warning");
                 $("#result").addClass("btn-success");
+                
+                //for questionaere
+                $("#myModal").modal("show");
             } else {
                 $("#result").removeClass("btn-danger btw-success");
                 $("#result").addClass("btn-warning");
@@ -62,3 +65,22 @@ var getSub = function(){
         }
     });
 }
+
+var sendFeedback = function(){
+var answere = $("#feedback").val();
+
+if (answere){
+    alert("Thank you for the feedback!");
+}
+
+$.ajax({
+     url: "/feedback/?answere=" + answere,
+        cache: false,
+        success: function(data){
+            console.log(data);
+        },
+        error:function (xhr, ajaxOptions, thrownError){
+           console.log("Ajax request failed");
+        }
+    });
+};

@@ -29,6 +29,7 @@ app.get('/', routes.index);
 //api
 app.get('/get/*', routes.getSubtitle);
 app.get('/output/*', routes.downloadSubtitle);
+app.get('/feedback/*', routes.feedback);
 
 //render
 

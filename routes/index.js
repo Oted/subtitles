@@ -1,5 +1,7 @@
 var crawler = require("../my_modules/crawler.js"),
-    target = "http://subscene.com/subtitles/title?q=";
+    target  = "http://subscene.com/subtitles/title?q=",
+    //for questionaere
+    fs      = require("fs");
 
 exports.index = function(req, res){
     res.render("index",{});
@@ -28,3 +30,11 @@ exports.downloadSubtitle = function(req, res){
     res.download("." + req.path);
 };
 
+exports.feedback = function(req, res){
+    fs.appendFile('log.txt', 
+            new Date() + "\n" +
+            req.query.answere + "\n\n", function (err) {
+                if (err) console.log(err);
+            }
+    );
+};
