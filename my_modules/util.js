@@ -89,9 +89,13 @@ var modifyLevenValue = function(query, result){
             if (queryArr[i].length > 0 && resultArr[j].length > 0){
                 tempValue = standardLevenstein(queryArr[i], resultArr[j]);
                 
+                    //special case for the first word
                 if (i === 0 && j === 0){
-                    if (tempValue > 1){
-                        // console.log(resultArr[i] + " , " + queryArr[j] + " : " + tempValue);
+                    // console.log(resultArr[i] + " , " + queryArr[j] + " : " + tempValue);
+                    // console.log(resultArr[i].length + " , " + queryArr[j].length);
+                    
+                    //bug here fix later... 
+                    if (tempValue > 1 || resultArr[0].length - 1 !== queryArr[0].length){
                         returnObj.rating = 2; 
                     }
                 } 
