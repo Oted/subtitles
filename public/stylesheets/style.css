@@ -25,6 +25,7 @@ body{}
 }
 
 #slider{
+    cursor:pointer;
     transition-property: left;
     transition-duration: 2s;   
     left:-1000px;

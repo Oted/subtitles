@@ -27,8 +27,6 @@ var getSub = function(){
                 $("#result").removeClass("btn-danger btn-warning");
                 $("#result").addClass("btn-success");
                 
-                //for questionaere
-                $("#myModal").modal("show");
             } else {
                 $("#result").removeClass("btn-danger btw-success");
                 $("#result").addClass("btn-warning");
@@ -39,10 +37,12 @@ var getSub = function(){
             
             $("#result").show(200);
             if (Math.random() > 0.7){
-                document.getElementById("slider").innerHTML = "Any thoughts or feedback? Contact us at swiftsubs.feedback@gmail.com";
+                document.getElementById("slider").innerHTML = "Any thoughts or feedback? Contact us by clicking here";
+                document.getElementById("slider").addEventListener("click", function(){$("#myModal").modal("show");});
             } else {
                 document.getElementById("slider").innerHTML = "You may right click and save as to place the file in the right folder";
             }
+
             $("#slider").css({"left":window.innerWidth / 2});
         },
         error:function (xhr, ajaxOptions, thrownError){
@@ -54,9 +54,9 @@ var getSub = function(){
             document.getElementById("result").href = "#";
             document.getElementById("sub_title").value = "";
             if (++i > 2){
+                //for questionaere
+                $("#myModal").modal("show");
                 document.getElementById("result").innerHTML = "Nothing could be found, sorry"; 
-                document.getElementById("slider").innerHTML = "Any thoughts or feedback? Contact us at swiftsubs.feedback@gmail.com";
-                $("#slider").css({"left":window.innerWidth / 2});
             } else if ($("#language").val() === "English"){
                 document.getElementById("result").innerHTML = "Nothing found, maybe you need to be more specfic?";
             } else {
