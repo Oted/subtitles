@@ -1,14 +1,15 @@
-var util = require("./util.js"),
-    archivehandler = require("./archiveHandler.js"),
-    cache = [],
-    CacheEntity = require("./CacheEntity.js"),
-    request = require('request'),
-    cheerio = require('cheerio');
+var util            = require("./util.js"),
+    archivehandler  = require("./archiveHandler.js"),
+    cache           = [],
+    CacheEntity     = require("./CacheEntity.js"),
+    request         = require('request'),
+    cheerio         = require('cheerio'),
+    fs              = require("fs");
 
 /**
  * Checks if this search has been cached before
  */
-exports.checkCache = function(query, language, callback){
+exports.checkCache = function(query, language, callback) {
     var exec = require('child_process').exec,
         child;
 
@@ -18,14 +19,16 @@ exports.checkCache = function(query, language, callback){
     }
     for (var i = cache.length - 1; i >= 0; i--){
         var entity = cache[i];
-        if (entity.equals(query, language)){
-            callback(entity.getValue());
-            break;
-        } else if (entity.hasExpired()){
+
+        if (!fs.existsSync("./output/" + entity.getValue()) || entity.hasExpired()) {
             child = exec("rm ./output/" + entity.getValue(), function (error, stdout, stderr){}); 
             cache.splice(i, 1);
             console.log(entity.getValue() + " has been removed from cache.");
+        } else if (entity.equals(query, language)){
+            callback(entity.getValue());
+            break;
         }
+
         if (i === 0){
             callback("");
         }
@@ -35,7 +38,7 @@ exports.checkCache = function(query, language, callback){
 /**
  *  Called from router with the url to crawl, injects respose object
  */
-exports.getData = function(target, query, targetLanguage, res){
+exports.getData = function(target, query, targetLanguage, res) {
     var url = target + query,
         bestPossible = [],
         worstPossible = [];
