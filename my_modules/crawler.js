@@ -6,6 +6,15 @@ var util            = require("./util.js"),
     cheerio         = require('cheerio'),
     fs              = require("fs");
 
+
+/**
+ * Checks if this search has been cached before
+ */
+exports.getCache = function() {
+    return cache;
+};
+
+
 /**
  * Checks if this search has been cached before
  */

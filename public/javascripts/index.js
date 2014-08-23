@@ -8,7 +8,64 @@ $(document).ready(function(){
     });
 
     $("#right_slider").css({"right":window.innerWidth / 4});
+
+    document.getElementById("refresh_cache").addEventListener("click", function(){
+        var modalContent = document.getElementById("cache_content");
+        getCache(function(data){
+            buildCacheContent(modalContent, data);
+        });
+    });
+
+    document.getElementById("open_cache").addEventListener("click", function(){
+        var modalContent = document.getElementById("cache_content");
+        $("#myModal2").modal("show");
+        getCache(function(data){
+            buildCacheContent(modalContent, data);
+        });
+    });
 });
+
+var getCache = function(callback) {
+    $.ajax({ 
+        url: "/getcache/",
+        success: function(data){
+            var jsonData = [];
+
+            try {
+                jsonData = JSON.parse(data);
+                callback(jsonData);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        error:function (xhr, ajaxOptions, thrownError){
+            console.log("Ajax request failed");
+        }
+    });
+};
+
+
+var buildCacheContent = function(root, data) {
+    root.innerHTML = "";
+    
+    var text,
+        newListItem,
+        newList;
+   
+        newList = document.createElement("ul");
+        newList.className = "list-group";
+        root.appendChild(newList);
+    
+    data.forEach(function(el){
+        text = el.key.replace(/\./g, " ");
+        newListItem = document.createElement("li");
+        newListItem.className = "list-group-item";
+        newListItem.innerHTML = text;
+
+        newList.appendChild(newListItem); 
+    
+    });
+};
 
 var getSub = function(){
     var title = document.getElementById("sub_title").value;
@@ -67,20 +124,20 @@ var getSub = function(){
 }
 
 var sendFeedback = function(){
-var answere = $("#feedback").val();
+    var answere = $("#feedback").val();
 
-if (answere){
-    alert("Thank you for the feedback!");
-}
+    if (answere){
+        alert("Thank you for the feedback!");
+    }
 
-$.ajax({
-     url: "/feedback/?answere=" + answere,
-        cache: false,
-        success: function(data){
-            console.log(data);
-        },
-        error:function (xhr, ajaxOptions, thrownError){
-           console.log("Ajax request failed");
-        }
+    $.ajax({
+         url: "/feedback/?answere=" + answere,
+            cache: false,
+            success: function(data){
+                console.log(data);
+            },
+            error:function (xhr, ajaxOptions, thrownError){
+               console.log("Ajax request failed");
+            }
     });
 };

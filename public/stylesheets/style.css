@@ -1,5 +1,11 @@
 body{}
 
+.right-buffer {
+   right : 60px;
+   position : absolute; 
+   cursor:pointer;
+}
+
 .top-buffer {
     margin-top: 4px;
 }

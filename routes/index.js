@@ -1,7 +1,7 @@
 var crawler = require("../my_modules/crawler.js"),
     target  = "http://subscene.com/subtitles/title?q=",
-    //for questionaere
-    fs      = require("fs");
+    fs      = require("fs"),
+    _       = require("underscore"); 
 
 exports.index = function(req, res){
     res.render("index",{});
@@ -28,6 +28,15 @@ exports.getSubtitle = function(req, res){
 
 exports.downloadSubtitle = function(req, res){
     res.download("." + req.path);
+};
+
+exports.getCache = function(req, res){
+    var cache = _.shuffle(crawler.getCache());
+    
+    console.log("User requested cache!");
+    cache = cache.slice(0,10);
+
+    res.json(JSON.stringify(cache));
 };
 
 exports.feedback = function(req, res){
