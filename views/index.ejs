@@ -20,7 +20,29 @@
                 <div class="form-group">
                   <a id="open_cache" class="right-buffer" onClick=getCache()> What are other people watching ? </a>
 
-
+                  <div class="modal fade" id="mySecondModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Dear user!</h4>
+                          </div>
+                          <div class="modal-body">
+                            <p>
+                                The feedback you have given us has been so valuable, we can't thank you guys enough for the support.
+                                But let's face it, this place does not need more work. Its done, serving subtitles can't be more swift than this. And it will always be here for you :)
+                            </p>
+                            <p>
+                                So we moved on, many hours and late nights later we are proud to present our new website, www.getsomeinternet.com. Just like this one, its non profit and is there just to improve your life! It is meant for those moments when all threads and subs are browsed, when we feel lost and don't know where to go.
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Not now</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" onClick="getToGSI()"> Join the war agains boredom </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>   
                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                       <div class="modal-dialog">
                         <div class="modal-content">
@@ -30,8 +52,7 @@
                           </div>
                           <div class="modal-body">
                               <p> 
-                                Thank you for using swiftsubs.com, as one of our first users we want to 
-                                make sure that you enjoy our search engine and have a great experience while being here.
+                                Thank you for using swiftsubs.com, we want to make sure that you enjoy our search engine and have a great experience while being here.
                               </p>
                               <p>
                                 To improve the site we need your help! 

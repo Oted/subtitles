@@ -11,7 +11,7 @@ $(document).ready(function(){
 
     document.getElementById("refresh_cache").addEventListener("click", function(){
         var modalContent = document.getElementById("cache_content");
-        getCache(function(data){
+        getCache(function(data) {
             buildCacheContent(modalContent, data);
         });
     });
@@ -23,7 +23,13 @@ $(document).ready(function(){
             buildCacheContent(modalContent, data);
         });
     });
+    
+    $("#mySecondModal").modal("show");
 });
+
+var getToGSI = function() {
+     window.open('http://getsomeinternet.com','_blank');
+};
 
 var getCache = function(callback) {
     $.ajax({ 
