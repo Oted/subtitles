@@ -24,7 +24,7 @@ $(document).ready(function(){
         });
     });
     
-    $("#mySecondModal").modal("show");
+    //$("#mySecondModal").modal("show");
 });
 
 var getToGSI = function() {
