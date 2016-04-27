@@ -7,14 +7,14 @@ var http = require("http"),
  *  get the rarfile of the best result and extracts the srt file
  */
 exports.extractFile = function(url, language, callback){
+    var file;
 
     return request({'uri' : url, 'headers' : {
         'accept-encodinfg' : 'gzip, deflate, sdch',
         'accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'user-agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36'
-    }}, function(body, res, err) {
-        var file;
-        if (!res || !res.headers || !res.headers["content-disposition"]){
+    }}).on('response', function(res) {
+        if (!res || !res.headers || !res.headers["content-disposition"]) {
             callback("");
             console.log("------- error: res was not defined ---------");
             return;
@@ -27,6 +27,7 @@ exports.extractFile = function(url, language, callback){
         file = fs.createWriteStream("./archives/" + archiveFileName);
         res.pipe(file);
         file.on("finish", function() {
+            res.emit("end");
             if (archiveFileName){
                 getArchiveContent(archiveFileName, uniqueName, language, function(fileName){
                     callback(fileName);
@@ -36,7 +37,7 @@ exports.extractFile = function(url, language, callback){
             }
             file.end();
         });
-    }).on("error", function(){
+    }).on("error", function() {
         callback("");
     });
 };
